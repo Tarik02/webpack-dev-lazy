@@ -39,8 +39,8 @@ export class WebpackDevLazy {
           const middleware = {
             name: PLUGIN_NAME,
             path: '/' + baseUri,
-            middleware: (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-              const keys = req.url.substring(1).split("@");
+            middleware: (req: Express.Request, res: Express.Response) => {
+              const keys = req.url.split("@");
               req.socket.on('close', () => {
                 for (const key of keys) {
                   const state = activeModules.get(key)! as ModuleState & { type: 'used' };
