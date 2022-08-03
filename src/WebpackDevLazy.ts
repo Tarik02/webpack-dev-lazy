@@ -105,11 +105,12 @@ export class WebpackDevLazy {
                 active
               };
             },
-            dispose: () => {
+            dispose: callback => {
               const index = middlewares.indexOf(middleware);
               if (index !== -1) {
                 middlewares.splice(index, 1);
               }
+              callback();
             },
           });
 
