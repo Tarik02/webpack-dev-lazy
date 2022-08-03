@@ -1,0 +1,41 @@
+{
+  "name": "webpack-dev-lazy",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "https://github.com/Tarik02/webpack-dev-lazy#readme",
+  "bugs": {
+    "url": "https://github.com/Tarik02/webpack-dev-lazy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tarik02/webpack-dev-lazy.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./client": {
+      "require": "./lib/client.cjs"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepack": "yarn build"
+  },
+  "peerDependencies": {
+    "webpack": ">=5"
+  },
+  "devDependencies": {
+    "@types/node": "^18.6.1",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-dev-server": "^4.9.3"
+  }
+}
