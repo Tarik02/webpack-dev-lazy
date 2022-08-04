@@ -1,15 +1,17 @@
 import Express from 'express';
+import multimatch from 'multimatch';
+import { createRequire } from 'node:module';
+import * as Path from 'node:path';
 import Webpack from 'webpack';
 import LazyCompilationPlugin from 'webpack/lib/hmr/LazyCompilationPlugin.js';
 import { injectDevServerMiddlewareSetup } from './quirks/injectDevServerMiddlewareSetup.js';
-import { createRequire } from 'node:module';
 
 const PLUGIN_NAME = 'WebpackDevLazy';
 
 type Options = {
   entries?: boolean;
   imports?: boolean;
-  test?: RegExp | string | ((module: Webpack.Module) => boolean);
+  test?: string | string[] | ((module: Webpack.Module) => boolean);
   unusedTimeout?: number;
   baseUri?: string;
 };
@@ -123,7 +125,26 @@ export class WebpackDevLazy {
       backend: () => backendPromise,
       entries: this.options.entries ?? true,
       imports: this.options.imports ?? true,
-      test: this.options.test,
+      test: typeof this.options.test === 'string' || this.options.test instanceof Array ?
+        module => {
+          const patterns = (
+            typeof this.options.test === 'string' ? [ this.options.test ] : this.options.test
+          ) as Array<string>;
+          const conditionName = module.nameForCondition();
+          if (conditionName === null) {
+            return false;
+          }
+
+          return multimatch(
+            [
+              conditionName,
+              Path.relative(compiler.context, conditionName),
+              './' + Path.relative(compiler.context, conditionName),
+            ],
+            patterns,
+          ).length > 0;
+        } :
+        this.options.test,
     })).apply(compiler);
   }
 }

@@ -55,13 +55,17 @@ export default async (env) => {
 
       //
       // Option: test
-      // String (checked with startsWith) or RegEx or function to check whether the module should by
+      // Minimatch pattern or function to check whether the module should by
       // compiled only on demand. By default, all modules are compiled on demand.
       //
 
-      test: /\.lazy\.js$/i,
+      test: './src/modules/**',
 
-      test: '/path/to/lazy/compiled/modules',
+      test: [
+        './node_modules/**',
+        './src/modules/**',
+        '!./src/modules/app.js',
+      ],
 
       /** @param {Webpack.Module} module */
       test: module => module.nameForCondition().startsWith('/path/to/lazy/compiled/modules'),
